@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raffle System — Plugin Guide</title>
+<meta name="description" content="Raffle System: Post-embedded prize raffles paid with currency. Full description and step-by-step manual.">
+<script>(function(){try{var t=localStorage.getItem('ofs-guide-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+:root{
+  --bg:#f3f2ef;--bg2:#e8e5df;--panel:#fbfaf8;--panel2:#efede9;--ink:#343230;--muted:#77726a;
+  --line:#e0dcd4;--brand:#5c7385;--brand-ink:#465b6c;--brand-soft:#dde3e9;
+  --code-bg:#ece9e3;--code-ink:#4a6070;
+  --shadow:0 1px 2px rgba(50,45,38,.06),0 10px 28px rgba(50,45,38,.09);
+  --maxw:1080px;--radius:16px;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+/* dark: system default (no stamp) unless an explicit light choice is made */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1e1d1b;--bg2:#161513;--panel:#282623;--panel2:#211f1d;--ink:#e7e3dc;--muted:#a09a8f;
+  --line:#3a3733;--brand:#86a2b8;--brand-ink:#a6c0d4;--brand-soft:#2c363f;
+  --code-bg:#2c2a26;--code-ink:#a9c3d6;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);
+}}
+/* explicit toggle wins in both directions */
+:root[data-theme="dark"]{
+  --bg:#1e1d1b;--bg2:#161513;--panel:#282623;--panel2:#211f1d;--ink:#e7e3dc;--muted:#a09a8f;
+  --line:#3a3733;--brand:#86a2b8;--brand-ink:#a6c0d4;--brand-soft:#2c363f;
+  --code-bg:#2c2a26;--code-ink:#a9c3d6;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--ink);line-height:1.6;background:radial-gradient(1100px 560px at 18% -12%,var(--bg2),transparent 60%),var(--bg);}
+a{color:var(--brand-ink)}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
+/* top bar */
+.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(8px);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:60px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:-.2px}
+.brand .bm{font-size:22px}
+.top .sp{flex:1 1 auto}
+.top a.up{text-decoration:none;color:var(--muted);font-size:14px}
+.top a.up:hover{color:var(--brand-ink)}
+.tgl{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 13px;font:inherit;font-size:14px}
+.tgl:hover{border-color:var(--brand)}
+.tgl .ti{font-size:15px;line-height:1}
+/* headings */
+h1{font-size:clamp(26px,4vw,36px);letter-spacing:-.6px;margin:0;text-wrap:balance}
+h2{font-size:22px;letter-spacing:-.2px;margin:34px 0 10px;padding-top:6px;text-wrap:balance}
+h3.sec{font-size:15px;letter-spacing:.04em;text-transform:none;margin:30px 0 8px;color:var(--brand-ink);
+  padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h4{font-size:15.5px;margin:18px 0 4px;color:var(--ink)}
+p{margin:9px 0}
+ul,ol{margin:9px 0;padding-left:22px}li{margin:4px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);color:var(--code-ink);
+  padding:1px 6px;border-radius:6px;word-break:break-word}
+[id]{scroll-margin-top:78px}
+/* home */
+.hero{padding:44px 0 8px}
+.hero .tag{color:var(--muted);font-size:16px;margin:10px 0 0;max-width:60ch}
+h2.grp{border-top:1px solid var(--line);padding-top:20px;margin:30px 0 4px}
+.grpnote{color:var(--muted);font-size:15px;margin:4px 0 2px;max-width:64ch}
+.order{display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center;margin:22px 0 6px;font-size:13.5px;color:var(--muted)}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--ink)}
+.chip.b{color:var(--brand-ink);border-color:var(--brand-soft)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0 46px}
+@media (max-width:720px){.cards{grid-template-columns:1fr}}
+a.card{display:flex;gap:15px;align-items:flex-start;text-decoration:none;color:inherit;background:var(--panel);
+  border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+a.card:hover{border-color:var(--brand);transform:translateY(-2px)}
+a.card .em{font-size:32px;flex:0 0 auto;line-height:1}
+a.card .grow{flex:1 1 auto;min-width:0}
+a.card h2{margin:0;font-size:18px;color:var(--brand-ink);padding:0}
+a.card p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+a.card .arrow{color:var(--brand);font-size:20px;flex:0 0 auto;align-self:center}
+/* plugin page */
+.phead{padding:34px 0 4px}
+.phead .em{font-size:40px}
+.phead .tag{color:var(--muted);font-size:16px;margin:8px 0 0}
+.layout{display:grid;grid-template-columns:232px minmax(0,1fr);gap:34px;padding:14px 0 60px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr;gap:6px}}
+.toc{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px}
+@media (max-width:900px){.toc{position:static;max-height:none;margin:8px 0 14px}}
+.toc .th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.toc a{display:block;text-decoration:none;color:var(--muted);font-size:13.5px;padding:4px 8px;border-radius:8px;border-left:2px solid transparent}
+.toc a.top{color:var(--ink);font-weight:600}
+.toc a.sub{padding-left:16px}
+.toc a:hover{color:var(--brand-ink);background:var(--panel2)}
+.toc a.active{color:var(--brand-ink);border-left-color:var(--brand);background:var(--panel2)}
+.prose{min-width:0;max-width:72ch}
+.prose h2:first-child{margin-top:8px}
+.back{display:inline-block;margin:0 0 2px;font-size:14px;text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--brand-ink)}
+.note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--brand);
+  border-radius:10px;padding:12px 15px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+footer{border-top:1px solid var(--line);margin-top:20px}
+footer .wrap{padding:20px 22px;color:var(--muted);font-size:12.5px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:var(--muted)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}a.card{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="./index.html"><span class="bm" aria-hidden="true">📖</span>ProBoards Plugins</a><span class="sp"></span><button id="themeToggle" class="tgl" type="button" aria-label="Toggle dark mode"><span class="ti" aria-hidden="true">🌙</span><span class="tl">Dark</span></button></div></header>
+<main>
+<section class="wrap phead"><div class="em" aria-hidden="true">🎟️</div><h1>Raffle System</h1><p class="tag">Post-embedded prize raffles paid with currency.</p></section><section class="wrap"><div class="layout"><nav class="toc" aria-label="On this page"><p class="th">On this page</p><a class="top" href="#overview" data-t="overview">Overview</a><a class="top" href="#manual" data-t="manual">Instruction Manual</a><a class="sub" href="#raffle-setting-it-up" data-t="raffle-setting-it-up">SETTING IT UP</a><a class="sub" href="#raffle-creating-a-raffle" data-t="raffle-creating-a-raffle">CREATING A RAFFLE</a><a class="sub" href="#raffle-embedding-it-in-a-post" data-t="raffle-embedding-it-in-a-post">EMBEDDING IT IN A POST</a><a class="sub" href="#raffle-how-members-enter" data-t="raffle-how-members-enter">HOW MEMBERS ENTER</a><a class="sub" href="#raffle-free-raffles" data-t="raffle-free-raffles">FREE RAFFLES</a><a class="sub" href="#raffle-rolling-the-winners" data-t="raffle-rolling-the-winners">ROLLING THE WINNERS</a><a class="sub" href="#raffle-announcing-delivering" data-t="raffle-announcing-delivering">ANNOUNCING &amp; DELIVERING</a><a class="sub" href="#raffle-ending-a-raffle" data-t="raffle-ending-a-raffle">ENDING A RAFFLE</a><a class="sub" href="#raffle-good-to-know" data-t="raffle-good-to-know">GOOD TO KNOW</a></nav><div class="prose"><a class="back" href="./index.html">← All plugins</a><h2 id="overview">Overview</h2><p>The Raffle System is a Currency System add-on for running prize raffles. Members buy event tickets with your currency, rank the prizes they most want, and an admin rolls the winners &mdash; any number of times. A raffle appears right inside a forum post via a short token like <code>[raffle=grandopening]</code>, as an interactive widget with a live countdown, buy and preference buttons, and the winners after the draw.</p><p>Prizes are a mix: Currency System items or currency amounts deliver automatically through the standard grant pop-up, while intangibles (a custom pet, a slot) notify the winner with a pop-up for you to fulfil by hand. It supports scheduled opens, purchase windows, per-member caps, gifting, free one-entry draws, and a paste-ready winner announcement.</p><p>Load order: it must sit <strong>below the Currency System</strong> (and Extras) on your Plugins page &mdash; it uses CS for currency, prize delivery, and its themed pop-ups.</p><h2 id="manual">Instruction Manual</h2><div class="note">The Setup Instructions inside the plugin&rsquo;s own settings are a quick-start checklist. This is the full, plain-English walkthrough of every feature.</div><p>The Raffle System is an ADD-ON to the Currency System (CS). It lets you run prize raffles where members buy tickets with your forum currency, choose which prizes they most want, and an admin rolls the winners. A raffle appears right inside a forum post via a short token like [raffle=grandopening], as an interactive widget with a live countdown, buy buttons, and (after the draw) the winners.</p><p>It needs the Currency System installed and loaded ABOVE it (it uses CS for currency, prize delivery, and its themed pop-ups). This manual explains setup and every feature in plain English.</p><h3 id="raffle-setting-it-up" class="sec">SETTING IT UP</h3><ol start="1"><li>Load order: on your Plugins page the Raffle System must sit BELOW the Currency System (and CS Extras).</li><li>Keys: the import creates four keys — raffle_events, raffle_tickets, raffle_results, raffle_admin. Confirm they exist on the Keys tab.</li><li>Key Permissions (important): set raffle_tickets to Members &amp; Staff (Read + Write) so members can enter; set raffle_events and raffle_results to Read Members &amp; Staff but WRITE Staff only, so members can't alter the raffle list or forge results. The import pre-sets these — just verify them.</li><li>Admin page: create a Custom Page whose content is exactly the one line  <code>&lt;div id="hcs-raffle-admin"&gt;</code><code>&lt;/div&gt;</code>  — this is your staff control panel. Keep it off the public menu.</li></ol><p>The plugin's own Setup Instructions tab repeats this as a checklist.</p><h4>Who can deliver prizes</h4><p>Delivering an item or currency prize writes to the winner's account, so — exactly like the CS grant panel — it only works for staff who have the ProBoards "Edit Profiles" power. Make sure whoever rolls (or whichever group you use for auto-roll) has it. Intangible prizes (a custom pet, a slot) don't need it; the winner is notified by a pop-up and you fulfil those by hand.</p><h3 id="raffle-creating-a-raffle" class="sec">CREATING A RAFFLE</h3><p>Open your admin page and click "New raffle". Fill in:</p><ul><li>Unique ID — letters, numbers, underscores, no spaces. This is the [raffle=ID] token you'll paste into a post. IDs can't be reused later, so pick a fresh one each time (e.g. grandopening, summer2026).</li><li>Title — the display name shown on the widget.</li><li>Preview image URL — optional banner across the top of the widget.</li><li>Ticket price — how much currency one ticket costs. Set it to 0 for a FREE raffle (see below).</li><li>Min tickets per purchase — the smallest number a member can buy at once (usually 1).</li><li>Self-purchase cap — the most a member may buy FOR THEMSELVES (blank = unlimited).</li><li>Member hold cap — the most a member may HOLD in total, including gifts (blank = unlimited).</li><li>Wins per member — 1 means "one prize each"; a higher number lets a member win several.</li><li>Total ticket cap — optional; when this many tickets total are sold, the raffle auto-closes.</li><li>Opens at — leave blank to open now, or enter a date/time (YYYY-MM-DD HH:MM) to schedule it.</li><li>Window (hours + minutes) — how long buying stays open once the raffle opens.</li><li>Grant message — the "Reason:" line a winner sees for an item/currency prize.</li><li>Allow gifting — lets members buy tickets for a friend.</li></ul><p>Then add prizes (below) and click "Save as draft" (to keep editing) or "Save &amp; open" (to start it). Prizes and the ID lock once a raffle opens.</p><h4>Adding prizes</h4><p>Prizes are numbered by their order in the list (1, 2, 3…). Each prize row is ONE of:</p><ul><li>A Currency System ITEM — fill in the item's ID and a quantity. It delivers automatically on roll, through the standard grant pop-up.</li><li>A CURRENCY amount — fill in the currency box. Also delivered automatically.</li><li>An INTANGIBLE — just a name (and an optional image), no item or currency. Use this for things CS doesn't track: a custom pet, a breeding slot, an art commission. The winner gets a "You won!" pop-up automatically; you hand the prize over yourself.</li></ul><p>Every prize can also have its own image URL, shown in the widget and results. Item prizes fall back to the item's own picture if you leave the image blank.</p><h3 id="raffle-embedding-it-in-a-post" class="sec">EMBEDDING IT IN A POST</h3><p>In any post or page, type the token — for example [raffle=grandopening] — and save. The raffle widget replaces the token. You can embed the same raffle in several posts; they all control the same event. If the ID is wrong or the raffle was deleted, the literal text stays put so nothing looks broken.</p><p>The widget changes with the raffle's state:</p><ul><li>Scheduled — shows the prizes and an "Opens in" countdown, no buy buttons yet.</li><li>Open — shows "Purchase Tickets" and "Set Preferences" buttons, your ticket count, and a "Closes in" countdown.</li><li>Closed — buttons disappear; it waits for the draw.</li><li>Rolled — shows the list of winners and the prize each won.</li></ul><h3 id="raffle-how-members-enter" class="sec">HOW MEMBERS ENTER</h3><h4>Buying tickets</h4><p>A member clicks "Purchase Tickets", enters a quantity, and (if gifting is on) a username to buy for. Entering their own name — or leaving it blank — is a normal self-purchase; entering someone else's name makes it a gift. The pop-up shows how many more they're allowed, and buying is refused if they can't afford it or would go over a cap. Buying spends from the member's wallet.</p><h4>Setting preferences</h4><p>If a raffle has more than one prize, members can click "Set Preferences" and rank the prizes they want, most-wanted first, dropping any they don't want at all. When they win, they get the highest-ranked prize still available. A member who ranks nothing still competes — they just receive whatever prize is left over. They can change their ranking any time while the raffle is open. (A single-prize raffle skips this step.)</p><h4>Gifting</h4><p>If you allowed gifting, any member can buy tickets for another member ("buy for a friend"). The only limit is the recipient's hold cap — a generous member can gift to as many people as they like. Gifts count toward what the recipient holds, not the giver's self cap. The recipient sees a "you received N tickets from …" note next time they load the forum. Refunds on a cancelled raffle always go back to whoever actually paid.</p><h3 id="raffle-free-raffles" class="sec">FREE RAFFLES</h3><p>Set the ticket price to 0 and the raffle becomes a free, one-entry-per-person draw: every entrant gets exactly one ticket, gifting is turned off, nothing is charged, and the button reads "Enter Raffle". Because everyone holds one ticket, everyone has equal odds — no separate mode to set up.</p><h3 id="raffle-rolling-the-winners" class="sec">ROLLING THE WINNERS</h3><p>ProBoards has no server, so a raffle can't roll itself the instant its timer ends. Rolling is page-load driven, two ways you can use together:</p><p>(A) Manual — after a raffle closes, press "Roll" on it in the admin panel.<br>(B) Auto — on the Raffle System settings tab, add member GROUPS to "Auto-roll groups". After a raffle closes, the first page-load by anyone in those groups rolls it automatically. Leave it empty for manual-only. Use groups with the "Edit Profiles" power so item/currency prizes deliver; otherwise those wait for the next staff visit (intangible prizes always deliver).</p><p>Rolling is safe to trigger more than once — the winners are decided by a fixed formula, so the result is the same no matter who rolls or how many times, and nobody is ever awarded twice.</p><h4>How winners are chosen</h4><p>The draw is purely ticket-weighted: every ticket is one slip in the hat, so more tickets means more chances (never a guaranteed win). Each win uses up one ticket, and "Wins per member" is a hard ceiling no matter how many tickets someone holds. Winners get the highest-ranked prize they still want; members who didn't rank get whatever's left over. A prize nobody could receive is reported back to you to hand out or re-roll.</p><h3 id="raffle-announcing-delivering" class="sec">ANNOUNCING &amp; DELIVERING</h3><p>As soon as a raffle is rolled:</p><ul><li>The widget in every post shows the winners and their prizes.</li><li>Each winner is notified on their next visit — item/currency winners get the standard grant pop-up (with your grant message), intangible winners get a "You won!" pop-up with the prize image.</li></ul><p>For a public shout-out, open the rolled raffle in the admin panel and click "Announcement". It builds a ready-to-paste block; paste it into the raffle post (or a reply) and SAVE. Saving is what actually notifies the members and turns <code>[item=…]</code> into item cards — a plugin can't send those notifications from a widget it drew on the page. Any winner whose name couldn't be looked up is listed for you to tag by hand (their win pop-up still reaches them).</p><h3 id="raffle-ending-a-raffle" class="sec">ENDING A RAFFLE</h3><ul><li>Clear — after a raffle is rolled, "Clear" tidies it away: members' ticket entries for it are dropped. Winners already shown in old posts stay visible.</li><li>Cancel — "Cancel" ends a raffle early AND refunds every buyer exactly what they paid (gifters are refunded, not the people they gifted). Use this if a raffle needs to be called off. There are no refunds on the normal close-and-roll path — only on Cancel.</li></ul><h3 id="raffle-good-to-know" class="sec">GOOD TO KNOW</h3><ul><li>Everything runs in the member's browser (all ProBoards plugins do), so ticket counts and windows are enforced on trust, not by a server. This is fine for a friendly forum economy; it's not a bank vault.</li><li>Because there's no server, a couple of members entering at the exact same instant can, rarely, nudge slightly past a cap — harmless (a touch more odds), and the currency ledger itself stays correct.</li><li>A raffle ID can't be reused; pick a new one each event so old tickets never bleed into a new draw.</li><li>Only staff with the "Edit Profiles" power can deliver item/currency prizes; set your auto-roll group accordingly.</li></ul></div></div></section>
+</main>
+<footer><div class="wrap"><span>Owlsomniac&rsquo;s ProBoards Plugins &mdash; guides &amp; manuals.</span><span><a href="https://github.com/owlsomniac/pb" target="_blank" rel="noopener">source</a></span></div></footer>
+<script>
+(function(){
+  var root=document.documentElement,KEY='ofs-guide-theme';
+  function cur(){var t=root.getAttribute('data-theme');if(t)return t;return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
+  function upd(){var t=cur(),b=document.getElementById('themeToggle');if(!b)return;
+    b.setAttribute('aria-label',t==='dark'?'Switch to light mode':'Switch to dark mode');
+    b.querySelector('.ti').textContent=t==='dark'?'\u2600\uFE0F':'\uD83C\uDF19';
+    b.querySelector('.tl').textContent=t==='dark'?'Light':'Dark';}
+  function set(t){root.setAttribute('data-theme',t);try{localStorage.setItem(KEY,t);}catch(e){}upd();}
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#themeToggle');if(b){e.preventDefault();set(cur()==='dark'?'light':'dark');}});
+  upd();
+  // TOC scrollspy
+  var links=[].slice.call(document.querySelectorAll('.toc a[data-t]'));
+  if(links.length&&'IntersectionObserver' in window){
+    var map={};links.forEach(function(a){map[a.getAttribute('data-t')]=a;});
+    var vis={};
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){vis[en.target.id]=en.isIntersecting?en.intersectionRatio:0;});
+      var best=null,br=0;Object.keys(vis).forEach(function(id){if(vis[id]>br){br=vis[id];best=id;}});
+      if(best){links.forEach(function(a){a.classList.remove('active');});if(map[best])map[best].classList.add('active');}
+    },{rootMargin:'-70px 0px -70% 0px',threshold:[0,.25,.5,1]});
+    Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el)io.observe(el);});
+  }
+})();
+</script>
+</body>
+</html>
